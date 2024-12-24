@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "develop" ]
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKER_HUB }}/${{ github.repository }}
+  IMAGE_TAG: v$(date +%Y%m%d%H%M)
+
 jobs:
 
   build:
@@ -24,10 +28,8 @@ jobs:
         
     - name: Build the Docker image
       run: |
-        IMAGE_NAME=${{ secrets.DOCKER_HUB }}/${{ github.repository }}
-        TAG=v$(date +%Y%m%d%H%M)
-        docker build . --file Dockerfile.amd64 --tag $IMAGE_NAME:$TAG
-        docker push $IMAGE_NAME:$TAG
+        docker build . --file Dockerfile.amd64 --tag $IMAGE_NAME:$IMAGE_TAG
+        docker push $IMAGE_NAME:$IMAGE_TAG
         
     - name: Create Release Notes
       id: create_release_notes
@@ -38,7 +40,7 @@ jobs:
     - name: Upload to GitHub Release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.ref_name }}-docker-image
+        tag_name: ${{ github.ref_name }}
         release_name: Docker Image Release for ${{ github.ref_name }}
         body_path: release_notes.txt
         draft: false
