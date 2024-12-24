@@ -22,6 +22,7 @@ jobs:
       run: |
         echo "IMAGE_NAME=${{ secrets.DOCKER_HUB }}/${{ github.repository }}" >> $GITHUB_ENV
         echo "IMAGE_TAG=v$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+        echo "release_date=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
     - name: Login to DockerHub
       run: |
@@ -41,7 +42,7 @@ jobs:
     - name: Upload to GitHub Release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.ref_name }}-docker-images
+        tag_name: ${release_date} build docker images
         release_name: ${{ github.ref_name }}
         body_path: release_notes.txt
         draft: false
