@@ -51,8 +51,7 @@ RUN apt update \
         fcitx fcitx-pinyin \
     && apt autoclean -y \
     && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && im-config -n fcitx
+    && rm -rf /var/lib/apt/lists/*
 
 # Additional packages require ~600MB
 # libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
