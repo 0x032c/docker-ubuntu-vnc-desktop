@@ -36,13 +36,13 @@ jobs:
     - name: Create Release Notes
       id: create_release_notes
       run: |
-        echo "Docker Image Released!" > release_notes.txt
+        echo "${release_date} Docker Image Released!" > release_notes.txt
         echo "Image: $IMAGE_NAME:$IMAGE_TAG" >> release_notes.txt
 
     - name: Upload to GitHub Release
       uses: actions/create-release@v1
       with:
-        tag_name: ${release_date} build docker images
+        tag_name: v1.0.0
         release_name: ${{ github.ref_name }}
         body_path: release_notes.txt
         draft: false
