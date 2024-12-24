@@ -20,6 +20,7 @@ RUN apt update \
         supervisor nginx sudo net-tools zenity xz-utils \
         dbus-x11 x11-utils alsa-utils \
         mesa-utils libgl1-mesa-dri \
+        language-pack-zh-hans \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -28,6 +29,7 @@ RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc \
         vim-tiny firefox ttf-ubuntu-font-family ttf-wqy-zenhei  \
+        libatomic1 libxkbcommon-x11-0 libxcb-randr0 libxcb-icccm4 libxcb-image0 libxcb-render-util0 libxcb-keysyms1 \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -36,17 +38,21 @@ RUN apt update \
     && apt install -y gpg-agent \
     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && (dpkg -i ./google-chrome-stable_current_amd64.deb || apt-get install -fy) \
+    && curl -LO https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb \
+    && (dpkg -i ./WeChatLinux_x86_64.deb || apt-get install -fy) \
     && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add \
     && rm google-chrome-stable_current_amd64.deb \
+    && rm WeChatLinux_x86_64.deb \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme \
+        fcitx fcitx-pinyin \
     && apt autoclean -y \
     && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
-
+    && rm -rf /var/lib/apt/lists/* \
+    && im-config -n fcitx
 
 # Additional packages require ~600MB
 # libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
@@ -124,6 +130,9 @@ RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/fron
 EXPOSE 80
 WORKDIR /root
 ENV HOME=/home/ubuntu \
-    SHELL=/bin/bash
+    SHELL=/bin/bash \
+    LANG=zh_CN.UTF-8 \ 
+    LANGUAGE=zh_CN:en \
+    LC_ALL=zh_CN.UTF-8
 HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://127.0.0.1:6079/api/health
 ENTRYPOINT ["/startup.sh"]
