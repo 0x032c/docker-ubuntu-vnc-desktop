@@ -41,8 +41,8 @@ jobs:
     - name: Upload to GitHub Release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Docker Image Release for ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}-docker-images
+        release_name: ${{ github.ref_name }}
         body_path: release_notes.txt
         draft: false
         prerelease: false
