@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "develop" ]
 
-env:
-  IMAGE_NAME: ${{ secrets.DOCKER_HUB }}/${{ github.repository }}
-  IMAGE_TAG: v$(date +%Y%m%d%H%M)
-
 jobs:
 
   build:
@@ -21,7 +17,12 @@ jobs:
       with:
         submodules: recursive # 递归拉取所有子模块
         fetch-depth: 0        # 确保完整克隆（非浅克隆）
-        
+
+    - name: Set Image Variables
+      run: |
+        echo "IMAGE_NAME=${{ secrets.DOCKER_HUB }}/${{ github.repository }}" >> $GITHUB_ENV
+        echo "IMAGE_TAG=v$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+
     - name: Login to DockerHub
       run: |
         docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_HUB }}
