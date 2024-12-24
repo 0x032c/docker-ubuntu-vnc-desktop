@@ -31,20 +31,15 @@ jobs:
         file: Dockerfile.amd64
         push: true
         tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} 
-        
-    - name: Create Release Notes
-      id: create_release_notes
-      run: |
-        echo "${release_date} Docker Image Released!" > release_notes.txt
-        echo "Image: $IMAGE_NAME:$IMAGE_TAG" >> release_notes.txt
 
-    - name: Upload to GitHub Release
-      uses: actions/create-release@v1.1.0
+    - name: Create Release with Notes
+      uses: softprops/action-gh-release@v2
       with:
+        name: ${{ github.ref_name }}
+        body: |
+          ### Release Details
+          - Date: ${{ env.release_date }}
+          - Image: `${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}`
         tag_name: ${{ github.event.inputs.tag_name }}
-        release_name: ${{ github.ref_name }}
-        body_path: release_notes.txt
-        draft: false
-        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
