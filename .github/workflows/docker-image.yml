@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_HUB }}
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB }}/{{ GITHUB_REPOSITORY }}:v$(date +%s)
+        docker push ${{ secrets.DOCKER_HUB }}/{{ GITHUB_REPOSITORY }}:v$(date +%Y%m%d%H%M)
