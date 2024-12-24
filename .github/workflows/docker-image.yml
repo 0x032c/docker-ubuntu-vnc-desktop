@@ -9,11 +9,9 @@ on:
         default: 'v1.0.0'
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v4
       with:
@@ -26,14 +24,13 @@ jobs:
         echo "IMAGE_TAG=v$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
         echo "release_date=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
-    - name: Login to DockerHub
-      run: |
-        docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_HUB }}
-        
-    - name: Build the Docker image
-      run: |
-        docker build . --file Dockerfile.amd64 --tag $IMAGE_NAME:$IMAGE_TAG
-        docker push $IMAGE_NAME:$IMAGE_TAG
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: Dockerfile.amd64
+        push: true
+        tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} 
         
     - name: Create Release Notes
       id: create_release_notes
@@ -42,7 +39,7 @@ jobs:
         echo "Image: $IMAGE_NAME:$IMAGE_TAG" >> release_notes.txt
 
     - name: Upload to GitHub Release
-      uses: actions/create-release@v1.1.4
+      uses: actions/create-release@v2
       with:
         tag_name: ${{ github.event.inputs.tag_name }}
         release_name: ${{ github.ref_name }}
