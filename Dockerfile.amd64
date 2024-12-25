@@ -126,6 +126,8 @@ RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/fron
 
 RUN apt-get update \
     && apt install -y fcitx fcitx-pinyin \
+    && apt install -y --no-install-recommends --allow-unauthenticated locales \
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
