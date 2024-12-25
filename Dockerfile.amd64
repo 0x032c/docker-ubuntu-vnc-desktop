@@ -124,7 +124,11 @@ COPY rootfs /
 RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && \
 	chmod +x /usr/local/lib/web/frontend/static/websockify/run
 
-RUN apt install -y fcitx fcitx-pinyin
+RUN apt-get update \
+    && apt install -y fcitx fcitx-pinyin \
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 WORKDIR /root
