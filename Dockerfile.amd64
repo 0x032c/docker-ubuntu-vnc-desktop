@@ -30,6 +30,7 @@ RUN apt update \
         xvfb x11vnc \
         vim-tiny firefox ttf-ubuntu-font-family ttf-wqy-zenhei  \
         libatomic1 libxkbcommon-x11-0 libxcb-randr0 libxcb-icccm4 libxcb-image0 libxcb-render-util0 libxcb-keysyms1 \
+    && apt install -y fcitx fcitx-pinyin \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -72,7 +73,7 @@ RUN apt update \
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
 RUN apt-get update \
     && dpkg-query -W -f='${Package}\n' > /tmp/a.txt \
-    && apt-get install -y python3-pip python3-dev build-essential fcitx fcitx-pinyin \
+    && apt-get install -y python3-pip python3-dev build-essential \
     && pip3 install setuptools wheel && pip3 install -r /tmp/requirements.txt \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && dpkg-query -W -f='${Package}\n' > /tmp/b.txt \
